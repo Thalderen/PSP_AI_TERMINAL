@@ -1,0 +1,30 @@
+name: Build PSP EBOOT
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: pspdev/pspdev:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Debug source
+        run: |
+          git rev-parse HEAD
+          ls -la
+          ls -la src/audio || true
+          awk 'NR>=80 && NR<=95 {print NR ":" $0}' src/audio/mic.c || true
+
+      - name: Build
+        run: |
+          make clean || true
+          make
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EBOOT_PBP
+          path: EBOOT.PBP
+          if-no-files-found: error
