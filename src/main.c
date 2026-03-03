@@ -1,7 +1,21 @@
-#include "render.h"
+#include <pspkernel.h>
 #include <pspdebug.h>
-#include <stdio.h>
+#include <pspdisplay.h>
+#include <pspctrl.h>
+#include <psprtc.h>
+#include <psputility.h>
+#include <psputility_netmodules.h>
+
 #include <string.h>
+#include <stdio.h>
+
+#include "core/app.h"
+#include "core/commands.h"
+#include "ui/render.h"
+#include "ui/animations.h"
+#include "network/http_client.h"
+#include "audio/mic.h"
+
 
 static void draw_scanline_overlay(void) {
     /* Disabled for stability on pspDebug text renderer. */
@@ -83,3 +97,4 @@ void ui_render(const AppState* app) {
 
     draw_scanline_overlay();
 }
+
