@@ -3,6 +3,8 @@
 #include <pspdisplay.h>
 #include <pspctrl.h>
 #include <psprtc.h>
+#include <psputility.h>
+#include <psputility_netmodules.h>
 
 #include <string.h>
 #include <stdio.h>
@@ -43,6 +45,15 @@ static int setup_callbacks(void) {
     return thid;
 }
 
+static void load_net_modules(void) {
+    sceUtilityLoadNetModule(PSP_NET_MODULE_COMMON);
+    sceUtilityLoadNetModule(PSP_NET_MODULE_INET);
+    sceUtilityLoadNetModule(PSP_NET_MODULE_PARSEURI);
+    sceUtilityLoadNetModule(PSP_NET_MODULE_PARSEHTTP);
+    sceUtilityLoadNetModule(PSP_NET_MODULE_HTTP);
+    sceUtilityLoadNetModule(PSP_NET_MODULE_SSL);
+}
+
 static void append_char(AppState* app, char c) {
     if (app->input_len < INPUT_LEN - 1) {
         app->input[app->input_len++] = c;
@@ -74,10 +85,13 @@ int main(void) {
 
     app_init(&app);
     ui_init();
+    ui_render(&app);
+    sceDisplayWaitVblankStart();
 
     now_us = sceKernelGetSystemTimeWide();
     app.boot_start_us = now_us;
 
+    load_net_modules();
     if (net_init_wifi() == 0) {
         app.connected = 1;
         snprintf(app.status_line, sizeof(app.status_line), "NETWORK ONLINE");
