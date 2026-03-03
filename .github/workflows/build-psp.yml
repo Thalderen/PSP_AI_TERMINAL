@@ -11,12 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Fix git safe.directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Debug source
         run: |
           git rev-parse HEAD
-          ls -la
-          ls -la src/audio || true
-          awk 'NR>=80 && NR<=95 {print NR ":" $0}' src/audio/mic.c || true
+          sed -n '80,95p' src/audio/mic.c
+          sed -n '65,115p' src/network/http_client.c
 
       - name: Build
         run: |
