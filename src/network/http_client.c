@@ -43,9 +43,6 @@ int net_init_wifi(void) {
     err = sceHttpInit(HTTP_HEAP_SIZE);
     if (err < 0) return err;
 
-    err = sceHttpEnableKeepAlive(1);
-    if (err < 0) return err;
-
     return 0;
 }
 
@@ -63,6 +60,7 @@ static int http_post_with_type(const char* url, const void* body, int body_len, 
     int req = -1;
     int status = 0;
     int read_total = 0;
+
     char* mutable_url = (char*)url;
     char* mutable_content_type = (char*)content_type;
     void* mutable_body = (void*)body;
@@ -84,6 +82,7 @@ static int http_post_with_type(const char* url, const void* body, int body_len, 
 
     read_total = sceHttpReadData(req, out, out_size - 1);
     if (read_total < 0) goto fail;
+
     out[read_total] = '\0';
 
     sceHttpDeleteRequest(req);
